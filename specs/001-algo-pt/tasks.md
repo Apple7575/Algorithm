@@ -75,46 +75,46 @@
 
 ### Extension Core Infrastructure
 
-- [ ] T026 [US1] Create manifest.json with permissions (storage, tabs, host_permissions for acmicpc.net)
-- [ ] T027 [US1] Setup Vite/Webpack build for extension in `extension/vite.config.ts`
-- [ ] T028 [US1] Create background service worker `extension/src/background/index.ts`
-- [ ] T029 [US1] Create chrome.storage utility `extension/src/lib/storage/index.ts`
+- [x] T026 [US1] Create manifest.json with permissions (storage, tabs, host_permissions for acmicpc.net)
+- [x] T027 [US1] Setup Vite/Webpack build for extension in `extension/vite.config.ts`
+- [x] T028 [US1] Create background service worker `extension/src/background/index.ts`
+- [x] T029 [US1] Create chrome.storage utility `extension/src/lib/storage/index.ts`
 
 ### Timer Module
 
-- [ ] T030 [US1] Implement timer logic in `extension/src/lib/timer/timer.ts` with start/pause/resume/stop
-- [ ] T031 [US1] Implement timer persistence using chrome.storage.session in `extension/src/lib/timer/persistence.ts`
-- [ ] T032 [US1] Create timer state management in background service worker
+- [x] T030 [US1] Implement timer logic in `extension/src/lib/timer/timer.ts` with start/pause/resume/stop
+- [x] T031 [US1] Implement timer persistence using chrome.storage.session in `extension/src/lib/timer/persistence.ts`
+- [x] T032 [US1] Create timer state management in background service worker
 
 ### BOJ DOM Parser
 
-- [ ] T033 [US1] Create URL pattern matcher `extension/src/lib/parser/url.ts` for BOJ problem pages
-- [ ] T034 [US1] Create submission result detector `extension/src/lib/parser/result.ts` using MutationObserver
-- [ ] T035 [US1] Create problem ID extractor from URL/DOM
+- [x] T033 [US1] Create URL pattern matcher `extension/src/lib/parser/url.ts` for BOJ problem pages
+- [x] T034 [US1] Create submission result detector `extension/src/lib/parser/result.ts` using MutationObserver
+- [x] T035 [US1] Create problem ID extractor from URL/DOM
 
 ### Content Script
 
-- [ ] T036 [US1] Create content script `extension/src/content/index.ts` with page detection
-- [ ] T037 [US1] Implement tab visibility handler for timer pause/resume (Page Visibility API)
-- [ ] T038 [US1] Implement message passing between content script and background
+- [x] T036 [US1] Create content script `extension/src/content/index.ts` with page detection
+- [x] T037 [US1] Implement tab visibility handler for timer pause/resume (Page Visibility API)
+- [x] T038 [US1] Implement message passing between content script and background
 
 ### Result Popup UI
 
-- [ ] T039 [US1] Create popup base UI `extension/src/popup/App.tsx` with React
-- [ ] T040 [US1] Create success popup component with difficulty rating (Easy/Normal/Hard)
-- [ ] T041 [US1] Create failure popup component with failure reason (algo/impl/time/edge)
-- [ ] T042 [US1] Implement popup trigger on submission result detection
+- [x] T039 [US1] Create popup base UI `extension/src/popup/App.tsx` with React
+- [x] T040 [US1] Create success popup component with difficulty rating (Easy/Normal/Hard)
+- [x] T041 [US1] Create failure popup component with failure reason (algo/impl/time/edge)
+- [x] T042 [US1] Implement popup trigger on submission result detection
 
 ### Data Submission
 
-- [ ] T043 [US1] Create API client for study_logs in `extension/src/lib/api/studyLog.ts`
-- [ ] T044 [US1] Implement offline queue for failed submissions `extension/src/lib/storage/queue.ts`
-- [ ] T045 [US1] Create problem metadata fetcher (from Solved.ac or cache)
+- [x] T043 [US1] Create API client for study_logs in `extension/src/lib/api/studyLog.ts`
+- [x] T044 [US1] Implement offline queue for failed submissions `extension/src/lib/storage/queue.ts`
+- [x] T045 [US1] Create problem metadata fetcher (from Solved.ac or cache)
 
 ### Auth Token Sharing
 
-- [ ] T046 [US1] Implement token receiver in extension from web dashboard message
-- [ ] T047 [US1] Create auth status indicator in popup UI
+- [x] T046 [US1] Implement token receiver in extension from web dashboard message
+- [x] T047 [US1] Create auth status indicator in popup UI
 - [ ] T048 [US1] Implement token refresh request flow
 
 **Checkpoint**: 백준에서 문제 풀이 → 결과 감지 → 팝업 → 태깅 → DB 저장 전체 흐름 확인
