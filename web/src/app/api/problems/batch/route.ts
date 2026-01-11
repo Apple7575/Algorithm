@@ -6,6 +6,14 @@ interface BatchRequest {
   problem_ids: number[];
 }
 
+interface CachedProblem {
+  problem_id: number;
+  title: string;
+  level: number | null;
+  tags: string[];
+  cached_at: string;
+}
+
 const MAX_BATCH_SIZE = 100;
 const CACHE_EXPIRY_DAYS = 7;
 
@@ -30,13 +38,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const cachedData = (cached ?? []) as CachedProblem[];
+
     // Determine which need refresh
     const now = new Date();
     const expiryDate = new Date(now.getTime() - CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
 
-    const cachedMap = new Map(cached?.map(p => [p.problem_id, p]) ?? []);
+    const cachedMap = new Map(cachedData.map(p => [p.problem_id, p]));
     const needsRefresh: number[] = [];
-    const results: typeof cached = [];
+    const results: CachedProblem[] = [];
 
     for (const id of problemIds) {
       const cachedProblem = cachedMap.get(id);
@@ -58,16 +68,17 @@ export async function POST(request: NextRequest) {
 
       // Upsert fresh data
       if (freshData.length > 0) {
-        const { error: upsertError } = await supabase.from('problems').upsert(
-          freshData.map(p => ({
-            problem_id: p.problem_id,
-            title: p.title,
-            level: p.level,
-            tags: p.tags,
-            cached_at: new Date().toISOString(),
-          })),
-          { onConflict: 'problem_id' }
-        );
+        const upsertData = freshData.map(p => ({
+          problem_id: p.problem_id,
+          title: p.title,
+          level: p.level,
+          tags: p.tags,
+          cached_at: new Date().toISOString(),
+        }));
+
+        const { error: upsertError } = await supabase
+          .from('problems')
+          .upsert(upsertData as never[], { onConflict: 'problem_id' });
 
         if (upsertError) {
           console.error('Error upserting problems:', upsertError);

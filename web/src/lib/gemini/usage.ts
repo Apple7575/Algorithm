@@ -31,8 +31,9 @@ export async function getUsage(userId: string): Promise<UsageStatus> {
     .eq('date', today)
     .single();
 
-  const flashUsed = data?.flash_count ?? 0;
-  const proUsed = data?.pro_count ?? 0;
+  const usageData = data as { flash_count: number; pro_count: number } | null;
+  const flashUsed = usageData?.flash_count ?? 0;
+  const proUsed = usageData?.pro_count ?? 0;
 
   // Calculate next midnight
   const tomorrow = new Date();
@@ -86,23 +87,26 @@ export async function incrementUsage(userId: string, mode: AIMode): Promise<void
     .eq('date', today)
     .single();
 
-  if (existing) {
+  const existingData = existing as { id: string; flash_count: number; pro_count: number } | null;
+
+  if (existingData) {
     // Update existing
     const updateField = mode === 'flash' ? 'flash_count' : 'pro_count';
-    const currentCount = mode === 'flash' ? existing.flash_count : existing.pro_count;
+    const currentCount = mode === 'flash' ? existingData.flash_count : existingData.pro_count;
 
     await supabase
       .from('ai_usage')
-      .update({ [updateField]: currentCount + 1 })
-      .eq('id', existing.id);
+      .update({ [updateField]: currentCount + 1 } as never)
+      .eq('id', existingData.id);
   } else {
     // Create new
-    await supabase.from('ai_usage').insert({
+    const insertData = {
       user_id: userId,
       date: today,
       flash_count: mode === 'flash' ? 1 : 0,
       pro_count: mode === 'pro' ? 1 : 0,
-    });
+    };
+    await supabase.from('ai_usage').insert(insertData as never);
   }
 }
 

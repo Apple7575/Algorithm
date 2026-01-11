@@ -55,6 +55,8 @@ export async function getWeaknessScores(userId: string): Promise<WeaknessScore[]
     return [];
   }
 
+  const logs = data as Array<{ failure_reason: string | null }>;
+
   // Count by reason
   const counts: Record<FailureReason, number> = {
     algo: 0,
@@ -63,7 +65,7 @@ export async function getWeaknessScores(userId: string): Promise<WeaknessScore[]
     edge: 0,
   };
 
-  for (const log of data) {
+  for (const log of logs) {
     if (log.failure_reason) {
       counts[log.failure_reason as FailureReason]++;
     }
@@ -120,9 +122,11 @@ export async function getWeaknessTrend(
     return [];
   }
 
+  const trendLogs = data as Array<{ solved_at: string }>;
+
   // Group by date
   const byDate: Record<string, number> = {};
-  for (const log of data) {
+  for (const log of trendLogs) {
     const date = log.solved_at.split('T')[0];
     byDate[date] = (byDate[date] || 0) + 1;
   }

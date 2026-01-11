@@ -42,20 +42,22 @@ export async function POST(request: NextRequest) {
     );
 
     // Create study log with SM-2 values
+    const insertData = {
+      user_id: user.id,
+      problem_id: body.problem_id,
+      status: body.status,
+      duration_seconds: body.duration_seconds ?? null,
+      difficulty_rating: body.difficulty_rating ?? null,
+      failure_reason: body.failure_reason ?? null,
+      next_review_date: sm2Result.nextReviewDate.toISOString().split('T')[0],
+      easiness_factor: sm2Result.easinessFactor,
+      interval_days: sm2Result.intervalDays,
+      repetitions: sm2Result.repetitions,
+    };
+
     const { data, error } = await supabase
       .from('study_logs')
-      .insert({
-        user_id: user.id,
-        problem_id: body.problem_id,
-        status: body.status,
-        duration_seconds: body.duration_seconds ?? null,
-        difficulty_rating: body.difficulty_rating ?? null,
-        failure_reason: body.failure_reason ?? null,
-        next_review_date: sm2Result.nextReviewDate.toISOString().split('T')[0],
-        easiness_factor: sm2Result.easinessFactor,
-        interval_days: sm2Result.intervalDays,
-        repetitions: sm2Result.repetitions,
-      })
+      .insert(insertData as never)
       .select()
       .single();
 

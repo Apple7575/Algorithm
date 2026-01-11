@@ -47,9 +47,12 @@ export async function POST(request: NextRequest) {
       .eq('problem_id', problem_id)
       .single();
 
-    const problemDescription = problem
-      ? `Problem #${problem_id}: ${problem.title}\nDifficulty: Level ${problem.level}\nTags: ${problem.tags?.join(', ') || 'Unknown'}`
-      : `Problem #${problem_id}`;
+    let problemDescription = `Problem #${problem_id}`;
+    if (problem) {
+      const p = problem as { title: string; level: number | null; tags: string[] };
+      const tags = Array.isArray(p.tags) ? p.tags.join(', ') : 'Unknown';
+      problemDescription = `Problem #${problem_id}: ${p.title}\nDifficulty: Level ${p.level}\nTags: ${tags}`;
+    }
 
     // Generate review
     const prompt = generateReviewPrompt(problemDescription, code, language, mode);
@@ -76,6 +79,7 @@ export async function POST(request: NextRequest) {
 
     const reviewResponse: ReviewResponse = {
       review: reviewText,
+      mode_used: mode,
       issues,
       complexity_analysis: complexityAnalysis,
       remaining_requests: {

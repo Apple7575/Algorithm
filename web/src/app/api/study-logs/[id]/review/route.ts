@@ -8,6 +8,12 @@ interface ReviewBody {
   status: 'solved' | 'failed';
 }
 
+interface StudyLogRow {
+  easiness_factor: number;
+  interval_days: number;
+  repetitions: number;
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -40,28 +46,32 @@ export async function POST(
       return NextResponse.json({ error: 'Study log not found' }, { status: 404 });
     }
 
+    const log = existingLog as StudyLogRow;
+
     // Calculate new SM-2 values
     const quality = difficultyToQuality(body.difficulty_rating, body.status);
     const sm2Result = updateSM2(
       {
-        easinessFactor: existingLog.easiness_factor,
-        intervalDays: existingLog.interval_days,
-        repetitions: existingLog.repetitions,
+        easinessFactor: log.easiness_factor,
+        intervalDays: log.interval_days,
+        repetitions: log.repetitions,
       },
       quality
     );
 
     // Update the study log
+    const updateData = {
+      status: sm2Result.status,
+      difficulty_rating: body.difficulty_rating,
+      next_review_date: sm2Result.nextReviewDate.toISOString().split('T')[0],
+      easiness_factor: sm2Result.easinessFactor,
+      interval_days: sm2Result.intervalDays,
+      repetitions: sm2Result.repetitions,
+    };
+
     const { data, error } = await supabase
       .from('study_logs')
-      .update({
-        status: sm2Result.status,
-        difficulty_rating: body.difficulty_rating,
-        next_review_date: sm2Result.nextReviewDate.toISOString().split('T')[0],
-        easiness_factor: sm2Result.easinessFactor,
-        interval_days: sm2Result.intervalDays,
-        repetitions: sm2Result.repetitions,
-      })
+      .update(updateData as never)
       .eq('id', id)
       .eq('user_id', user.id)
       .select()

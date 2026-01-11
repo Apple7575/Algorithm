@@ -112,27 +112,54 @@ export async function fetchUser(handle: string): Promise<SolvedAcUser | null> {
 }
 
 /**
- * Fetch user's solved problems from Solved.ac
+ * Fetch user's solved problems from Solved.ac (with pagination)
  */
 export async function fetchUserSolvedProblems(
-  handle: string
+  handle: string,
+  onProgress?: (current: number, total: number) => void
 ): Promise<number[]> {
-  try {
-    // Solved.ac provides solved problems through search
-    const response = await fetch(
-      `${SOLVED_AC_API}/search/problem?query=solved_by:${handle}&sort=id&direction=asc`,
-      { next: { revalidate: 300 } } // Cache for 5 minutes
-    );
+  const allProblems: number[] = [];
+  let page = 1;
+  const pageSize = 50;
+  let totalCount = 0;
 
-    if (!response.ok) {
-      return [];
+  try {
+    while (true) {
+      const response = await fetch(
+        `${SOLVED_AC_API}/search/problem?query=solved_by:${handle}&sort=id&direction=asc&page=${page}`,
+        { cache: 'no-store' }
+      );
+
+      if (!response.ok) {
+        break;
+      }
+
+      const data = await response.json();
+
+      if (page === 1) {
+        totalCount = data.count ?? 0;
+      }
+
+      const items: SolvedAcProblem[] = data.items ?? [];
+      if (items.length === 0) break;
+
+      allProblems.push(...items.map(p => p.problemId));
+
+      if (onProgress) {
+        onProgress(allProblems.length, totalCount);
+      }
+
+      if (items.length < pageSize) break;
+      page++;
+
+      // Rate limit protection
+      await new Promise(resolve => setTimeout(resolve, 300));
     }
 
-    const data = await response.json();
-    return data.items?.map((p: SolvedAcProblem) => p.problemId) ?? [];
+    return allProblems;
   } catch (error) {
     console.error(`Error fetching solved problems for ${handle}:`, error);
-    return [];
+    return allProblems; // Return what we have so far
   }
 }
 

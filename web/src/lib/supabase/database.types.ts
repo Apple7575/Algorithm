@@ -77,6 +77,7 @@ export interface Database {
           easiness_factor: number;
           interval_days: number;
           repetitions: number;
+          synced_from_solved_ac: boolean;
           created_at: string;
         };
         Insert: {
@@ -92,6 +93,7 @@ export interface Database {
           easiness_factor?: number;
           interval_days?: number;
           repetitions?: number;
+          synced_from_solved_ac?: boolean;
           created_at?: string;
         };
         Update: {
@@ -107,6 +109,7 @@ export interface Database {
           easiness_factor?: number;
           interval_days?: number;
           repetitions?: number;
+          synced_from_solved_ac?: boolean;
           created_at?: string;
         };
       };
@@ -131,6 +134,32 @@ export interface Database {
           date?: string;
           flash_count?: number;
           pro_count?: number;
+        };
+      };
+      profiles: {
+        Row: {
+          id: string;
+          baekjoon_id: string | null;
+          solved_ac_tier: number | null;
+          last_sync_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          baekjoon_id?: string | null;
+          solved_ac_tier?: number | null;
+          last_sync_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          baekjoon_id?: string | null;
+          solved_ac_tier?: number | null;
+          last_sync_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
         };
       };
     };

@@ -40,6 +40,7 @@ export interface CodeIssue {
 
 export interface ReviewResponse {
   review: string;
+  mode_used: AIMode;
   issues: CodeIssue[];
   complexity_analysis?: {
     time: string;
