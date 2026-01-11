@@ -15,14 +15,14 @@
 
 **Purpose**: Monorepo 초기화 및 기본 구조 설정
 
-- [ ] T001 Initialize pnpm workspace with `pnpm-workspace.yaml` at repository root
-- [ ] T002 Create `web/` Next.js 14 project with App Router (`pnpm create next-app@latest`)
-- [ ] T003 [P] Create `extension/` Chrome Extension project with Manifest V3
-- [ ] T004 [P] Create `packages/shared/` TypeScript package for shared types
-- [ ] T005 [P] Configure root `package.json` with workspace scripts (dev, build, lint, test)
-- [ ] T006 [P] Setup ESLint + Prettier configuration (root level, inherited by workspaces)
-- [ ] T007 [P] Setup TypeScript configuration with project references (`tsconfig.json`)
-- [ ] T008 Install shared dependencies: Tailwind CSS in `web/`, Shadcn/ui components
+- [x] T001 Initialize pnpm workspace with `pnpm-workspace.yaml` at repository root
+- [x] T002 Create `web/` Next.js 14 project with App Router (`pnpm create next-app@latest`)
+- [x] T003 [P] Create `extension/` Chrome Extension project with Manifest V3
+- [x] T004 [P] Create `packages/shared/` TypeScript package for shared types
+- [x] T005 [P] Configure root `package.json` with workspace scripts (dev, build, lint, test)
+- [x] T006 [P] Setup ESLint + Prettier configuration (root level, inherited by workspaces)
+- [x] T007 [P] Setup TypeScript configuration with project references (`tsconfig.json`)
+- [x] T008 Install shared dependencies: Tailwind CSS in `web/`, Shadcn/ui components
 
 **Checkpoint**: pnpm workspaces 동작 확인 (`pnpm install`, `pnpm --filter web dev`)
 
