@@ -1,0 +1,355 @@
+openapi: 3.1.0
+info:
+  title: Algo-PT API
+  description: |
+    Algo-PT 웹 대시보드 API.
+    Supabase를 백엔드로 사용하므로 대부분의 CRUD는 Supabase 클라이언트로 직접 처리.
+    이 문서는 커스텀 엔드포인트(Edge Functions)와 외부 API 통합을 정의.
+  version: 1.0.0
+
+servers:
+  - url: https://{project-ref}.supabase.co/functions/v1
+    description: Supabase Edge Functions
+  - url: https://algo-pt.vercel.app/api
+    description: Next.js API Routes (Vercel)
+
+tags:
+  - name: AI
+    description: AI 힌트 및 코드 리뷰
+  - name: Sync
+    description: 외부 데이터 동기화
+  - name: Problems
+    description: 문제 메타데이터
+
+paths:
+  /ai/hint:
+    post:
+      tags: [AI]
+      summary: AI 힌트 요청
+      description: |
+        문제에 대한 힌트를 AI로부터 받습니다.
+        정답 코드는 제공되지 않습니다.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HintRequest'
+      responses:
+        '200':
+          description: 힌트 응답
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HintResponse'
+        '429':
+          description: 일일 요청 한도 초과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /ai/review:
+    post:
+      tags: [AI]
+      summary: AI 코드 리뷰 요청
+      description: |
+        제출한 코드에 대한 리뷰를 AI로부터 받습니다.
+        비효율적인 부분과 개선 방안을 제시합니다.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewRequest'
+      responses:
+        '200':
+          description: 리뷰 응답
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewResponse'
+        '429':
+          description: 일일 요청 한도 초과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /sync/solved-ac:
+    post:
+      tags: [Sync]
+      summary: Solved.ac 풀이 기록 동기화
+      description: |
+        사용자의 백준 ID로 Solved.ac에서 최근 풀이 기록을 가져와 동기화합니다.
+        중복 데이터는 자동으로 무시됩니다.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - baekjoon_id
+              properties:
+                baekjoon_id:
+                  type: string
+                  example: "baekjoon_user"
+      responses:
+        '200':
+          description: 동기화 결과
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncResult'
+        '404':
+          description: Solved.ac에서 사용자를 찾을 수 없음
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /problems/{problemId}:
+    get:
+      tags: [Problems]
+      summary: 문제 메타데이터 조회
+      description: |
+        문제 번호로 메타데이터를 조회합니다.
+        캐시된 데이터가 7일 이상 오래되면 Solved.ac에서 갱신합니다.
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1000
+      responses:
+        '200':
+          description: 문제 메타데이터
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          description: 문제를 찾을 수 없음
+
+  /problems/batch:
+    post:
+      tags: [Problems]
+      summary: 여러 문제 메타데이터 일괄 조회
+      description: |
+        여러 문제의 메타데이터를 한 번에 조회합니다.
+        최대 100개까지 요청 가능합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problem_ids
+              properties:
+                problem_ids:
+                  type: array
+                  items:
+                    type: integer
+                  maxItems: 100
+                  example: [1000, 1001, 1002]
+      responses:
+        '200':
+          description: 문제 메타데이터 배열
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Problem'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Supabase Auth JWT token
+
+  schemas:
+    HintRequest:
+      type: object
+      required:
+        - problem_id
+        - mode
+      properties:
+        problem_id:
+          type: integer
+          description: 백준 문제 번호
+          example: 1000
+        mode:
+          type: string
+          enum: [flash, pro]
+          description: AI 모드 (flash=빠른, pro=고급)
+        current_approach:
+          type: string
+          description: 현재 시도 중인 접근 방식 (선택)
+          example: "투 포인터로 접근하려고 하는데..."
+
+    HintResponse:
+      type: object
+      properties:
+        hint:
+          type: string
+          description: AI가 생성한 힌트 (정답 코드 없음)
+          example: "이 문제는 그리디 접근으로 해결할 수 있습니다. 각 단계에서 가장 작은 값을 선택하는 것이 핵심입니다."
+        mode_used:
+          type: string
+          enum: [flash, pro]
+        remaining_requests:
+          type: object
+          properties:
+            flash:
+              type: integer
+              example: 49
+            pro:
+              type: integer
+              example: 10
+
+    ReviewRequest:
+      type: object
+      required:
+        - problem_id
+        - code
+        - mode
+      properties:
+        problem_id:
+          type: integer
+          description: 백준 문제 번호
+          example: 1000
+        code:
+          type: string
+          description: 리뷰할 코드
+          example: "n = int(input())\nprint(n + 1)"
+        language:
+          type: string
+          description: 프로그래밍 언어
+          default: python
+          example: python
+        mode:
+          type: string
+          enum: [flash, pro]
+
+    ReviewResponse:
+      type: object
+      properties:
+        review:
+          type: string
+          description: AI가 생성한 코드 리뷰
+        issues:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [inefficiency, bug, style, complexity]
+              line:
+                type: integer
+              description:
+                type: string
+              suggestion:
+                type: string
+        complexity_analysis:
+          type: object
+          properties:
+            time:
+              type: string
+              example: "O(n)"
+            space:
+              type: string
+              example: "O(1)"
+        remaining_requests:
+          type: object
+          properties:
+            flash:
+              type: integer
+            pro:
+              type: integer
+
+    SyncResult:
+      type: object
+      properties:
+        synced_count:
+          type: integer
+          description: 새로 동기화된 문제 수
+          example: 5
+        skipped_count:
+          type: integer
+          description: 이미 존재하여 스킵된 문제 수
+          example: 10
+        problems:
+          type: array
+          items:
+            type: object
+            properties:
+              problem_id:
+                type: integer
+              title:
+                type: string
+              status:
+                type: string
+                enum: [synced, skipped]
+
+    Problem:
+      type: object
+      properties:
+        problem_id:
+          type: integer
+          example: 1000
+        title:
+          type: string
+          example: "A+B"
+        level:
+          type: integer
+          description: Solved.ac 난이도 (0-30)
+          example: 1
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["math", "implementation"]
+        cached_at:
+          type: string
+          format: date-time
+
+    RateLimitError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Daily limit exceeded"
+        limit:
+          type: integer
+          example: 50
+        reset_at:
+          type: string
+          format: date-time
+          description: 한도 리셋 시간 (다음 자정)
+
+  responses:
+    Unauthorized:
+      description: 인증 필요
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
