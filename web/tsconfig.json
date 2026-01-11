@@ -17,8 +17,8 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"],
-      "@algo-pt/shared": ["../packages/shared/types"],
-      "@algo-pt/shared/*": ["../packages/shared/*"]
+      "@algo-pt/shared": ["./src/types/shared"],
+      "@algo-pt/shared/*": ["./src/types/shared/*"]
     },
     "baseUrl": "."
   },
