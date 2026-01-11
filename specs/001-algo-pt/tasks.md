@@ -36,32 +36,32 @@
 
 ### Supabase & Database
 
-- [ ] T009 Create Supabase project and configure environment variables in `web/.env.local`
-- [ ] T010 Create SQL migration file `supabase/migrations/001_initial_schema.sql` from data-model.md
-- [ ] T011 Apply migration and verify tables (users, problems, study_logs, ai_usage)
-- [ ] T012 Configure RLS policies for users, study_logs, ai_usage tables
-- [ ] T013 [P] Create Supabase client utilities in `web/src/lib/supabase/client.ts` (browser) and `server.ts` (SSR)
+- [x] T009 Create Supabase project and configure environment variables in `web/.env.local`
+- [x] T010 Create SQL migration file `supabase/migrations/001_initial_schema.sql` from data-model.md
+- [x] T011 Apply migration and verify tables (users, problems, study_logs, ai_usage)
+- [x] T012 Configure RLS policies for users, study_logs, ai_usage tables
+- [x] T013 [P] Create Supabase client utilities in `web/src/lib/supabase/client.ts` (browser) and `server.ts` (SSR)
 
 ### Shared Types
 
-- [ ] T014 [P] Create entity types in `packages/shared/types/entities.ts` (User, Problem, StudyLog, AIUsage)
-- [ ] T015 [P] Create extension message types in `packages/shared/types/messages.ts` from contracts/extension-messages.ts
-- [ ] T016 [P] Create API types in `packages/shared/types/api.ts` from contracts/api.yaml
-- [ ] T017 Setup package exports in `packages/shared/index.ts` and build configuration
+- [x] T014 [P] Create entity types in `packages/shared/types/entities.ts` (User, Problem, StudyLog, AIUsage)
+- [x] T015 [P] Create extension message types in `packages/shared/types/messages.ts` from contracts/extension-messages.ts
+- [x] T016 [P] Create API types in `packages/shared/types/api.ts` from contracts/api.yaml
+- [x] T017 Setup package exports in `packages/shared/index.ts` and build configuration
 
 ### Authentication
 
-- [ ] T018 Setup Supabase Auth in `web/src/app/(auth)/login/page.tsx`
-- [ ] T019 [P] Create signup page `web/src/app/(auth)/signup/page.tsx`
-- [ ] T020 Create auth middleware `web/src/middleware.ts` for protected routes
-- [ ] T021 Create auth context/hook `web/src/hooks/useAuth.ts` for client components
-- [ ] T022 Create user profile sync trigger (Supabase function) to sync auth.users → public.users
+- [x] T018 Setup Supabase Auth in `web/src/app/(auth)/login/page.tsx`
+- [x] T019 [P] Create signup page `web/src/app/(auth)/signup/page.tsx`
+- [x] T020 Create auth middleware `web/src/middleware.ts` for protected routes
+- [x] T021 Create auth context/hook `web/src/hooks/useAuth.ts` for client components
+- [x] T022 Create user profile sync trigger (Supabase function) to sync auth.users → public.users
 
 ### Base UI Components
 
-- [ ] T023 [P] Install Shadcn/ui base components (Button, Card, Input, Dialog, Toast)
-- [ ] T024 [P] Create layout component `web/src/app/layout.tsx` with navigation
-- [ ] T025 [P] Create dashboard layout `web/src/app/dashboard/layout.tsx`
+- [x] T023 [P] Install Shadcn/ui base components (Button, Card, Input, Dialog, Toast)
+- [x] T024 [P] Create layout component `web/src/app/layout.tsx` with navigation
+- [x] T025 [P] Create dashboard layout `web/src/app/dashboard/layout.tsx`
 
 **Checkpoint**: 로그인/회원가입 동작, Supabase 연결, 공유 타입 import 확인
 

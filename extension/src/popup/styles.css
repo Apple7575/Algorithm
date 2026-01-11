@@ -1,0 +1,275 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 320px;
+  min-height: 200px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #ffffff;
+  color: #1a1a2e;
+}
+
+.popup-container {
+  padding: 16px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #3b82f6;
+}
+
+.auth-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.auth-status.disconnected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.timer-section {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.timer-display {
+  font-size: 36px;
+  font-weight: 700;
+  font-family: 'SF Mono', monospace;
+  margin-bottom: 8px;
+}
+
+.problem-info {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.timer-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+}
+
+.btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #fecaca;
+}
+
+/* Result Popup */
+.result-section {
+  padding: 16px 0;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.result-icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.result-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.result-title.success {
+  color: #16a34a;
+}
+
+.result-title.failure {
+  color: #dc2626;
+}
+
+.result-stats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Rating Selection */
+.rating-section {
+  margin-bottom: 16px;
+}
+
+.rating-label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.rating-options {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-btn {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.rating-btn:hover {
+  border-color: #3b82f6;
+}
+
+.rating-btn.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.rating-btn.easy {
+  color: #16a34a;
+}
+
+.rating-btn.normal {
+  color: #ca8a04;
+}
+
+.rating-btn.hard {
+  color: #dc2626;
+}
+
+/* Failure Reason Selection */
+.failure-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.failure-btn {
+  padding: 10px 8px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 13px;
+}
+
+.failure-btn:hover {
+  border-color: #dc2626;
+}
+
+.failure-btn.selected {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+/* Submit Button */
+.submit-section {
+  margin-top: 16px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background: #2563eb;
+}
+
+.btn-submit:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Not Tracking State */
+.not-tracking {
+  text-align: center;
+  padding: 32px 16px;
+  color: #6b7280;
+}
+
+.not-tracking-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.not-tracking-text {
+  font-size: 14px;
+  line-height: 1.5;
+}
